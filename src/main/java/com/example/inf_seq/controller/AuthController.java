@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -41,6 +42,11 @@ public class AuthController {
         List<UserEntity> users = userRepository.findAll();
 
         return ResponseEntity.ok(users);
+    }
+    @GetMapping("/me")
+    public ResponseEntity<Map<String, Object>> getMe(@RequestHeader("Authorization") String authHeader) {
+        Map<String, Object> info = authService.getUserByToken(authHeader);
+       return ResponseEntity.ok(info);
     }
 
 //    @PostMapping("token")

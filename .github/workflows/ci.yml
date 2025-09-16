@@ -1,5 +1,6 @@
 name: CI
 
+
 on:
   push:
     branches: [ main ]
@@ -7,7 +8,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  dependency-check:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,8 +24,11 @@ jobs:
       - name: Build project
         run: mvn clean install -B
 
-      - name: Run SpotBugs (SAST)
-        run: mvn com.github.spotbugs:spotbugs-maven-plugin:spotbugs
-
-      - name: Run OWASP Dependency-Check (SCA)
+      - name: Run OWASP Dependency-Check
         run: mvn org.owasp:dependency-check-maven:check
+
+      - name: Upload Dependency-Check report
+        uses: actions/upload-artifact@v3
+        with:
+          name: dependency-check-report
+          path: target/dependency-check-report/

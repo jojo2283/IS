@@ -20,17 +20,16 @@ import java.util.Date;
 
 @Slf4j
 @Component
-public final class JwtProvider {
+public class JwtProvider {
 
     private final SecretKey jwtAccessSecret;
 
+    public JwtProvider(
+            @Value("${jwt.secret.access}") String jwtAccessSecret
 
-    public JwtProvider(@Value("${jwt.secret.access}") String jwtAccessSecret) {
-        try {
-            this.jwtAccessSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtAccessSecret));
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Ошибка инициализации JwtProvider", e);
-        }
+    ) {
+        this.jwtAccessSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtAccessSecret));
+
     }
 
 

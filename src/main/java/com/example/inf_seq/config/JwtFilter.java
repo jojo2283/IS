@@ -7,7 +7,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationContext;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,8 +27,8 @@ public class JwtFilter extends OncePerRequestFilter {
     private static final String AUTHORIZATION = "Authorization";
 
     private final JwtProvider jwtProvider;
+    private final UserDetailsService userDetailsService;
 
-    private final ApplicationContext context;
 
     @Override
     public void doFilterInternal(@NonNull HttpServletRequest request,
@@ -41,7 +40,6 @@ public class JwtFilter extends OncePerRequestFilter {
             final var login = jwtProvider.getAccessClaims(token).getSubject();
 
 
-            UserDetailsService userDetailsService = context.getBean(UserDetailsService.class);
             UserDetails userDetails = userDetailsService.loadUserByUsername(login);
 
 

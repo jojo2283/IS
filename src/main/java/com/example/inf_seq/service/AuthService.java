@@ -10,12 +10,11 @@ import com.example.inf_seq.exception.AuthException;
 import com.example.inf_seq.exception.UserAlreadyExistException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.HtmlUtils;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -70,7 +69,6 @@ public class AuthService {
         }
 
 
-
         if (passwordEncoder.matches(authRequest.getPassword(), user.getPassword())) {
             final String accessToken = jwtProvider.generateAccessToken((UserEntity) user);
 
@@ -80,12 +78,12 @@ public class AuthService {
         }
     }
 
-    public  Map<String, Object> getUserByToken(String token){
+    public Map<String, Object> getUserByToken(String token) {
         if (token == null || !token.startsWith("Bearer ")) {
             throw new AuthException("Token is missing or invalid");
         }
 
-         token = token.substring(7);
+        token = token.substring(7);
 
         if (!jwtProvider.validateAccessToken(token)) {
             throw new AuthException("Token is missing or invalid");
@@ -94,13 +92,12 @@ public class AuthService {
         var claims = jwtProvider.getAccessClaims(token);
 
         Map<String, Object> response = new HashMap<>();
-        response.put("username", claims.getSubject());
+        response.put("username", HtmlUtils.htmlEscape(claims.getSubject()));
         response.put("roles", claims.get("roles"));
         response.put("expiration", claims.getExpiration());
 
-         return response;
+        return response;
     }
-
 
 
 }

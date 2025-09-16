@@ -1,27 +1,23 @@
 package com.example.inf_seq.controller;
 
 
-import com.example.inf_seq.entity.UserEntity;
 import com.example.inf_seq.entity.request.JwtRequest;
 import com.example.inf_seq.entity.request.RegistrationRequest;
 import com.example.inf_seq.entity.response.JwtResponse;
-import com.example.inf_seq.repository.UserRepository;
 import com.example.inf_seq.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 
 @RestController
-@RequestMapping("api/auth")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
     private final AuthService authService;
-    private final UserRepository userRepository;
 
     @PostMapping("/register")
     public ResponseEntity<JwtResponse> registration(@RequestBody RegistrationRequest regRequest) {
@@ -37,16 +33,11 @@ public class AuthController {
         return ResponseEntity.ok(token);
     }
 
-    @GetMapping("/data")
-    public ResponseEntity<List<UserEntity>> getUsers() {
-        List<UserEntity> users = userRepository.findAll();
 
-        return ResponseEntity.ok(users);
-    }
     @GetMapping("/me")
     public ResponseEntity<Map<String, Object>> getMe(@RequestHeader("Authorization") String authHeader) {
         Map<String, Object> info = authService.getUserByToken(authHeader);
-       return ResponseEntity.ok(info);
+        return ResponseEntity.ok(info);
     }
 
 //    @PostMapping("token")

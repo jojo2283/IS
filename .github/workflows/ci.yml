@@ -24,6 +24,16 @@ jobs:
       - name: Build project
         run: mvn clean install -B -DskipTests
 
+
+      - name: Run SpotBugs
+        run: mvn com.github.spotbugs:spotbugs-maven-plugin:check
+
+      - name: Upload SpotBugs report
+        uses: actions/upload-artifact@v4
+        with:
+          name: spotbugs-report
+          path: target/spotbugs*
+
       - name: Run OWASP Dependency-Check
         run: mvn org.owasp:dependency-check-maven:check
 

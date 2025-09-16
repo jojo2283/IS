@@ -14,8 +14,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.HtmlUtils;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -74,6 +77,28 @@ public class AuthService {
             throw new AuthException("Wrong password");
         }
     }
+
+    public Map<String, Object> getUserByToken(String token) {
+        if (token == null || !token.startsWith("Bearer ")) {
+            throw new AuthException("Token is missing or invalid");
+        }
+
+        token = token.substring(7);
+
+        if (!jwtProvider.validateAccessToken(token)) {
+            throw new AuthException("Token is missing or invalid");
+        }
+
+        var claims = jwtProvider.getAccessClaims(token);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("username", HtmlUtils.htmlEscape(claims.getSubject()));
+        response.put("roles", claims.get("roles"));
+        response.put("expiration", claims.getExpiration());
+
+        return response;
+    }
+
 
 
 }

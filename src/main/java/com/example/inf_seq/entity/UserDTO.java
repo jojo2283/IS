@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.util.HtmlUtils;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -20,5 +21,13 @@ public class UserDTO {
         this.username = HtmlUtils.htmlEscape(user.getUsername());
         this.email = HtmlUtils.htmlEscape(user.getEmail());
         this.roles = user.getRoles();
+    }
+
+    public Set<Role> getRoles() {
+        return roles == null ? null : new HashSet<>(roles);
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles == null ? null : new HashSet<>(roles);
     }
 }
